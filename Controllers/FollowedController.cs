@@ -94,10 +94,7 @@ namespace WhatToWatch.Controllers
             string urlPath = String.Format(Constants.GetSearch, GetSlug(show.Name));
 
             SearchInfoRoot data = WebParser<SearchInfoRoot>.GetInfo(urlPath);
-
-            if (data.data.Count == 0)
-                return false; //Show not found
-
+            
             Show newShow = new Show()
             {
                 Id = data.data[0].id,
@@ -173,11 +170,33 @@ namespace WhatToWatch.Controllers
                 save.Start();
 
                 toBeChanged = new ShowViewModel(chosen);
-                AddEpisodeInfo(toBeChanged);
-
+                if (!AddEpisodeInfo(toBeChanged))
+                    if (!IsOngoing(chosen))
+                        return false;
+                
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
                 return true;
+            }
+
+            return false;
+        }
+
+        private bool IsOngoing(Show chosen)
+        {
+            string path = String.Format(Constants.GetSeries, chosen.Id);
+
+            try
+            {
+                ShowInfoRoot data = WebParser<ShowInfoRoot>.GetInfo(path);
+
+                if (data.data.status == "Continuing")
+                    return true;
+            }
+            catch (Exception)
+            {
+                //Unautorized
+                return false;
             }
 
             return false;
@@ -190,7 +209,7 @@ namespace WhatToWatch.Controllers
             ShowViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             Show chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
-            if (toBeChanged != null)
+            if (chosen != null)
             {
                 views.Remove(toBeChanged);
 
