@@ -1,4 +1,5 @@
-﻿using System.Windows;
+using System.Net.Http;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WhatToWatch.Controllers;
@@ -33,8 +34,18 @@ namespace WhatToWatch
             {
                 ShowBindingModel newShow = addWindow.NewShowInfo;
 
-                if (!controller.AddShow(newShow))
-                    MessageBox.Show("The show was not added. Check your internet conection ot the spelling of the show's title");
+                try
+                {
+                    if (!controller.AddShow(newShow))
+                        MessageBox.Show("The show was not added. Check your internet conection ot the spelling of the show's title");
+                }
+                catch (HttpRequestException ex)
+                {
+                    if (ex.HResult == 401)
+                        MessageBox.Show("The api token is expired");
+                    if (ex.HResult == 404)
+                        MessageBox.Show("The show was not found. Check your spelling of the name.");
+                }
             }
         }
 
