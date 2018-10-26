@@ -218,7 +218,20 @@ namespace WhatToWatch.Controllers
                 save.Start();
 
                 toBeChanged = new ShowViewModel(chosen);
-                AddEpisodeInfo(toBeChanged);
+                if (!AddEpisodeInfo(toBeChanged))
+                {
+                    if (!IsOngoing(chosen))
+                    {
+                        RemoveShow(id);
+                        return false;
+                    }
+                    else
+                    {
+                        chosen.CurrentSeason++;
+                        chosen.CurrentEpisode = 1;
+                        toBeChanged = new ShowViewModel(chosen);
+                    }
+                }
 
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
