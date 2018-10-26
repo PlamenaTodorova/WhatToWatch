@@ -37,11 +37,17 @@ namespace WhatToWatch.Controllers
         {
             List<ShowViewModel> helper = new List<ShowViewModel>();
 
-            foreach (Show show in tvShows)
+            for (int i = 0; i < tvShows.Count; i++)
             {
-                ShowViewModel newModel = new ShowViewModel(show);
+                ShowViewModel newModel = new ShowViewModel(tvShows[i]);
 
-                AddEpisodeInfo(newModel);
+                if (!AddEpisodeInfo(newModel))
+                    if (!IsOngoing(tvShows[i]))
+                    {
+                        RemoveShow(tvShows[i].Id);
+                        i--;
+                        continue;
+                    }
 
                 helper.Add(newModel);
             }
