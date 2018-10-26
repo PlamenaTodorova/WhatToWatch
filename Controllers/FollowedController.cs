@@ -223,7 +223,7 @@ namespace WhatToWatch.Controllers
                 Thread save = new Thread(SaveShows);
                 save.Start();
 
-                toBeChanged = new ShowViewModel(chosen);
+                toBeChanged.CurrentEpisode++;
                 if (!AddEpisodeInfo(toBeChanged))
                 {
                     if (!IsOngoing(chosen))
@@ -235,7 +235,10 @@ namespace WhatToWatch.Controllers
                     {
                         chosen.CurrentSeason++;
                         chosen.CurrentEpisode = 1;
-                        toBeChanged = new ShowViewModel(chosen);
+                        toBeChanged.CurrentSeason++;
+                        toBeChanged.CurrentEpisode = 1;
+                        
+                        toBeChanged.UpdateEpisodeInfo();
                     }
                 }
 
