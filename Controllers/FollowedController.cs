@@ -44,7 +44,7 @@ namespace WhatToWatch.Controllers
                 if (!AddEpisodeInfo(newModel))
                     if (!IsOngoing(tvShows[i]))
                     {
-                        RemoveShow(tvShows[i].Id);
+                        PermanentlyRemove(tvShows[i].Id);
                         i--;
                         continue;
                     }
