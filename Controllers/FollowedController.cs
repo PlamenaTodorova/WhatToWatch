@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using WhatToWatch.Models;
@@ -38,7 +39,11 @@ namespace WhatToWatch.Controllers
 
             foreach (Show show in tvShows)
             {
-                helper.Add(CreateView(show));
+                ShowViewModel newModel = new ShowViewModel(show);
+
+                AddEpisodeInfo(newModel);
+
+                helper.Add(newModel);
             }
 
             helper.Sort();
@@ -63,15 +68,23 @@ namespace WhatToWatch.Controllers
             return model;
         }
 
-        private ShowViewModel CreateView(Show show)
+        private bool AddEpisodeInfo(ShowViewModel model)
         {
-            string urlPath = String.Format(Constants.GetEpisode, show.Id, show.CurrentSeason, show.CurrentEpisode);
-            EpisodeInfoRoot ep = WebParser<EpisodeInfoRoot>.GetInfo(urlPath);
+            string urlPath = String.Format(Constants.GetEpisode, model.Id, model.CurrentSeason, model.CurrentEpisode);
+            EpisodeInfoRoot ep;
 
-            ShowViewModel model = new ShowViewModel(show);
+            try
+            {
+                ep = WebParser<EpisodeInfoRoot>.GetInfo(urlPath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             model.UpdateEpisodeInfo(ep.data);
 
-            return model;
+            return true;
         }
         #endregion
 
@@ -94,11 +107,15 @@ namespace WhatToWatch.Controllers
                 Status = show.Status
             };
 
+            ShowViewModel newView = new ShowViewModel(newShow);
+
+            if (!AddEpisodeInfo(newView))
+                if (data.data[0].status != "Continuing")
+                    return false;
+            
             Thread save = new Thread(AddAndSave);
             save.Start(newShow);
-
-            ShowViewModel newView = CreateView(newShow);
-
+            
             //Insert the view into the collection
             HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, newView);
 
@@ -155,7 +172,8 @@ namespace WhatToWatch.Controllers
                 Thread save = new Thread(SaveShows);
                 save.Start();
 
-                toBeChanged = CreateView(chosen);
+                toBeChanged = new ShowViewModel(chosen);
+                AddEpisodeInfo(toBeChanged);
 
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
@@ -180,7 +198,8 @@ namespace WhatToWatch.Controllers
                 Thread save = new Thread(SaveShows);
                 save.Start();
 
-                toBeChanged = CreateView(chosen);
+                toBeChanged = new ShowViewModel(chosen);
+                AddEpisodeInfo(toBeChanged);
 
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
