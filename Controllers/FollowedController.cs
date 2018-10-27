@@ -237,7 +237,7 @@ namespace WhatToWatch.Controllers
                         chosen.CurrentEpisode = 1;
                         toBeChanged.CurrentSeason++;
                         toBeChanged.CurrentEpisode = 1;
-                        
+
                         toBeChanged.UpdateEpisodeInfo();
                     }
                 }
