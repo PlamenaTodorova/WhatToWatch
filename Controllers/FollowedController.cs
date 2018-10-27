@@ -9,7 +9,7 @@ using System.Threading;
 using WhatToWatch.Models;
 using WhatToWatch.Models.BindingModels;
 using WhatToWatch.Models.JsonModels;
-using WhatToWatch.Models.ViewModels.WhatToWatch.Models.ViewModels;
+using WhatToWatch.Models.ViewModels;
 using WhatToWatch.Parsers;
 using WhatToWatch.Utilities;
 
