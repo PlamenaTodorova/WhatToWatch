@@ -3,6 +3,7 @@ using System.Collections.Generic;
 namespace WhatToWatch.Models.ViewModels
 {
     using global::WhatToWatch.Models.JsonModels;
+    using global::WhatToWatch.Utilities;
     using System;
 
     namespace WhatToWatch.Models.ViewModels
@@ -17,6 +18,9 @@ namespace WhatToWatch.Models.ViewModels
                 this.CurrentSeason = show.CurrentSeason;
                 this.Status = "None";
                 this.RealStatus = show.Status.ToString();
+
+                this.PosterSource = HelperFunctions.GetPosterSorce(show.Id, show.CurrentSeason);
+
             }
 
             public int Id { get; set; }
@@ -27,7 +31,7 @@ namespace WhatToWatch.Models.ViewModels
 
             public int CurrentEpisode { get; set; }
 
-            //public string PosterSource { get; set; }
+            public string PosterSource { get; set; }
 
             public string Status { get; set; }
 
@@ -51,6 +55,13 @@ namespace WhatToWatch.Models.ViewModels
                     this.Status = this.RealStatus;
                 else
                     this.Status = "None";
+            }
+
+            public void UpdateEpisodeInfo()
+            {
+                this.EpisodeTitle = "";
+                this.ReleaseDate = null;
+                this.Status = "None";
             }
 
             public int CompareTo(ShowViewModel other)
