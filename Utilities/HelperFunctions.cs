@@ -1,5 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using WhatToWatch.Models.JsonModels;
+using WhatToWatch.Parsers;
 
 namespace WhatToWatch.Utilities
 {
@@ -30,6 +33,31 @@ namespace WhatToWatch.Utilities
             }
 
             return start;
+        }
+
+        public static string GetPosterSorce(int showId, int showSeason)
+        {
+            string srcBase = "https://www.thetvdb.com/banners/";
+
+            while (showSeason > 0)
+            {
+                string path = String.Format(Constants.GetPoster, showId, showSeason);
+
+                try
+                {
+                    ImageInfoRoot data = WebParser<ImageInfoRoot>.GetInfo(path);
+
+                    data.data.OrderByDescending(p => p.ratingsInfo.average);
+
+                    return srcBase + data.data[0].fileName;
+                }
+                catch (Exception)
+                {
+                    --showSeason;
+                }
+            }
+
+            return "";
         }
     }
 }
