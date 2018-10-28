@@ -1,14 +1,9 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WhatToWatch.Models.ViewModels
 {
     using global::WhatToWatch.Models.JsonModels;
     using System;
-    using System.Windows.Media;
 
     namespace WhatToWatch.Models.ViewModels
     {
@@ -20,8 +15,8 @@ namespace WhatToWatch.Models.ViewModels
                 this.Title = show.Title;
                 this.CurrentEpisode = show.CurrentEpisode;
                 this.CurrentSeason = show.CurrentSeason;
-                this.Status = show.Status.ToString();
-                this.RealStatus = this.Status;
+                this.Status = "None";
+                this.RealStatus = show.Status.ToString();
             }
 
             public int Id { get; set; }

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using WhatToWatch.Models;
@@ -36,9 +37,19 @@ namespace WhatToWatch.Controllers
         {
             List<ShowViewModel> helper = new List<ShowViewModel>();
 
-            foreach (Show show in tvShows)
+            for (int i = 0; i < tvShows.Count; i++)
             {
-                helper.Add(CreateView(show));
+                ShowViewModel newModel = new ShowViewModel(tvShows[i]);
+
+                if (!AddEpisodeInfo(newModel))
+                    if (!IsOngoing(tvShows[i]))
+                    {
+                        PermanentlyRemove(tvShows[i].Id);
+                        i--;
+                        continue;
+                    }
+
+                helper.Add(newModel);
             }
 
             helper.Sort();
@@ -63,15 +74,23 @@ namespace WhatToWatch.Controllers
             return model;
         }
 
-        private ShowViewModel CreateView(Show show)
+        private bool AddEpisodeInfo(ShowViewModel model)
         {
-            string urlPath = String.Format(Constants.GetEpisode, show.Id, show.CurrentSeason, show.CurrentEpisode);
-            EpisodeInfoRoot ep = WebParser<EpisodeInfoRoot>.GetInfo(urlPath);
+            string urlPath = String.Format(Constants.GetEpisode, model.Id, model.CurrentSeason, model.CurrentEpisode);
+            EpisodeInfoRoot ep;
 
-            ShowViewModel model = new ShowViewModel(show);
+            try
+            {
+                ep = WebParser<EpisodeInfoRoot>.GetInfo(urlPath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             model.UpdateEpisodeInfo(ep.data);
 
-            return model;
+            return true;
         }
         #endregion
 
@@ -81,10 +100,7 @@ namespace WhatToWatch.Controllers
             string urlPath = String.Format(Constants.GetSearch, GetSlug(show.Name));
 
             SearchInfoRoot data = WebParser<SearchInfoRoot>.GetInfo(urlPath);
-
-            if (data.data.Count == 0)
-                return false; //Show not found
-
+            
             Show newShow = new Show()
             {
                 Id = data.data[0].id,
@@ -94,11 +110,15 @@ namespace WhatToWatch.Controllers
                 Status = show.Status
             };
 
+            ShowViewModel newView = new ShowViewModel(newShow);
+
+            if (!AddEpisodeInfo(newView))
+                if (data.data[0].status != "Continuing")
+                    return false;
+            
             Thread save = new Thread(AddAndSave);
             save.Start(newShow);
-
-            ShowViewModel newView = CreateView(newShow);
-
+            
             //Insert the view into the collection
             HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, newView);
 
@@ -155,11 +175,34 @@ namespace WhatToWatch.Controllers
                 Thread save = new Thread(SaveShows);
                 save.Start();
 
-                toBeChanged = CreateView(chosen);
-
+                toBeChanged = new ShowViewModel(chosen);
+                if (!AddEpisodeInfo(toBeChanged))
+                    if (!IsOngoing(chosen))
+                        return false;
+                
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
                 return true;
+            }
+
+            return false;
+        }
+
+        private bool IsOngoing(Show chosen)
+        {
+            string path = String.Format(Constants.GetSeries, chosen.Id);
+
+            try
+            {
+                ShowInfoRoot data = WebParser<ShowInfoRoot>.GetInfo(path);
+
+                if (data.data.status == "Continuing")
+                    return true;
+            }
+            catch (Exception)
+            {
+                //Unautorized
+                return false;
             }
 
             return false;
@@ -172,7 +215,7 @@ namespace WhatToWatch.Controllers
             ShowViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             Show chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
-            if (toBeChanged != null)
+            if (chosen != null)
             {
                 views.Remove(toBeChanged);
 
@@ -180,7 +223,24 @@ namespace WhatToWatch.Controllers
                 Thread save = new Thread(SaveShows);
                 save.Start();
 
-                toBeChanged = CreateView(chosen);
+                toBeChanged.CurrentEpisode++;
+                if (!AddEpisodeInfo(toBeChanged))
+                {
+                    if (!IsOngoing(chosen))
+                    {
+                        RemoveShow(id);
+                        return false;
+                    }
+                    else
+                    {
+                        chosen.CurrentSeason++;
+                        chosen.CurrentEpisode = 1;
+                        toBeChanged.CurrentSeason++;
+                        toBeChanged.CurrentEpisode = 1;
+                        
+                        toBeChanged.UpdateEpisodeInfo();
+                    }
+                }
 
                 HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
 
