@@ -133,7 +133,24 @@ namespace WhatToWatch.Controllers
         #region Remove
         public void RemoveShow(int id)
         {
-            throw new NotImplementedException();
+            BingeViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
+
+            if (toBeRemoved != null)
+            {
+                views.Remove(toBeRemoved);
+
+                Thread remove = new Thread(PermanentlyRemove);
+                remove.Start(id);
+            }
+        }
+
+        private void PermanentlyRemove(object param)
+        {
+            int id = (int)param;
+            BingeShow toBeRemoved = tvShows.FirstOrDefault(s => s.Id == id);
+
+            tvShows.Remove(toBeRemoved);
+            SaveShows();
         }
         #endregion
 
