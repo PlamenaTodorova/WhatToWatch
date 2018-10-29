@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -23,6 +23,7 @@ namespace WhatToWatch.Controllers
         public BingeController()
         {
             tvShows = JSONParser<List<BingeShow>>.ReadFile(Constants.BingeFile);
+            GenerateViews();
         }
 
         #region Safe
