@@ -11,12 +11,14 @@ namespace WhatToWatch
     {
         private IControllable currentController;
         private FollowedController followController;
-        
+        private BingeController bingeController;
+
         public MainWindow()
         {
             InitializeComponent();
 
             followController = new FollowedController();
+            bingeController = new BingeController();
             currentController = followController;
             tvShows.ItemsSource = followController.GetShows();
         }
@@ -103,12 +105,14 @@ namespace WhatToWatch
 
         private void Following_Click(object sender, RoutedEventArgs e)
         {
-            //Do something here?????????????
+            tvShows.ItemsSource = followController.GetShows();
+            currentController = followController;
         }
 
         private void Binging_Click(object sender, RoutedEventArgs e)
         {
-            //Do something here?????????????
+            tvShows.ItemsSource = bingeController.GetShows();
+            currentController = bingeController;
         }
 
         private void ToWatch_Click(object sender, RoutedEventArgs e)
