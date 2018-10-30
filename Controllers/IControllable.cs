@@ -18,5 +18,7 @@ namespace WhatToWatch.Controllers
         void RemoveShow(int id);
 
         bool NextEpisode(int id);
+        
+        void GenerateViews();
     }
 }
