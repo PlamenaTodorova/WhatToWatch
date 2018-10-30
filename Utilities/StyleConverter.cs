@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +17,9 @@ namespace WhatToWatch.Utilities
             Style yellow = values[2] as Style;
             Style green = values[3] as Style;
             Style none = values[4] as Style;
+
+            if (dataValue == null)
+                return none;
 
             if (dataValue.Equals("Red"))
                 return red;
