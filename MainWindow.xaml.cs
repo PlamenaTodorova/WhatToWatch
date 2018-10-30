@@ -16,6 +16,7 @@ namespace WhatToWatch
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
 
             followController = new FollowedController();
             bingeController = new BingeController();
@@ -101,7 +102,7 @@ namespace WhatToWatch
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            tvShows.ItemsSource = followController.GetShows();
+            currentController.GenerateViews();
         }
 
         private void Following_Click(object sender, RoutedEventArgs e)
