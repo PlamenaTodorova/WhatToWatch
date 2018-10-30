@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +40,18 @@ namespace WhatToWatch.Models.ViewModels
         {
             if (episodeData != null && episodeData.Count >= this.CurrentEpisode)
             {
+                string firstAired = episodeData[this.CurrentEpisode - 1].firstAired;
+
+                if (firstAired == "" && firstAired == null)
+                    throw new Exception("No bingable episodes");
+
+                if (firstAired != "" && firstAired != null)
+                {
+                    DateTime date = DateTime.Parse(firstAired);
+                    if (date > DateTime.Today)
+                        throw new Exception("No bingable episodes");
+                }
+
                 EpisodeTitle = episodeData[this.CurrentEpisode - 1].episodeName;
                 this.TotalEpisodes = episodeData.Count;
 
