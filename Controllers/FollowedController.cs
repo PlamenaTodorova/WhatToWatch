@@ -71,7 +71,7 @@ namespace WhatToWatch.Controllers
             return true;
         }
 
-        private void GenerateViews()
+        public void GenerateViews()
         {
             List<ShowViewModel> helper = new List<ShowViewModel>();
 
