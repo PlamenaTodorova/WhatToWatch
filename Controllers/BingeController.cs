@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -37,7 +38,16 @@ namespace WhatToWatch.Controllers
         #region Get
         public ShowBindingModel GetShow(int id)
         {
-            throw new NotImplementedException();
+            BingeShow chosen = tvShows.FirstOrDefault(e => e.Id == id);
+
+            ShowBindingModel model = new ShowBindingModel()
+            {
+                Name = chosen.Title,
+                CurrentEpisode = chosen.CurrentEpisode,
+                CurrentSeason = chosen.CurrentSeason
+            };
+
+            return model;
         }
 
         public ObservableCollection<BingeViewModel> GetShows()
@@ -58,13 +68,27 @@ namespace WhatToWatch.Controllers
                 ep = WebParser<EpisodeInfoRoot>.GetInfo(epPath);
                 total = WebParser<SeasonDataRoot>.GetInfo(totalPath);
             }
+            catch (HttpRequestException e)
+            {
+                if (e.HResult == 404)
+                    return false;
+
+                return true;
+            }
             catch (Exception)
             {
                 return false;
             }
 
-            model.UpdateEpisodeInfo(ep.data, total.data);
-
+            try
+            {
+                model.UpdateEpisodeInfo(ep.data, total.data);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
             return true;
         }
 
@@ -100,8 +124,10 @@ namespace WhatToWatch.Controllers
 
             BingeViewModel newView = new BingeViewModel(newShow);
 
-            if (!AddEpisodeInfo(newView))
+            if (BingeEnd(newView, newShow))
+            {
                 return false;
+            }
 
             Thread save = new Thread(AddAndSave);
             save.Start(newShow);
@@ -126,7 +152,26 @@ namespace WhatToWatch.Controllers
         #region Edit
         public bool EditShow(int id, ShowBindingModel show)
         {
-            throw new NotImplementedException();
+            BingeViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BingeShow chosen = tvShows.FirstOrDefault(s => s.Id == id);
+
+            if (toBeChanged != null)
+            {
+                views.Remove(toBeChanged);
+
+                chosen.UpdateData(show);
+                Thread save = new Thread(SaveShows);
+                save.Start();
+
+                toBeChanged = new BingeViewModel(chosen);
+
+                if (BingeEnd(toBeChanged, chosen))
+                    return false;
+                
+                return true;
+            }
+
+            return false;
         }
         #endregion
 
@@ -170,6 +215,65 @@ namespace WhatToWatch.Controllers
             throw new NotImplementedException();
         }
         #endregion
+        
+        private bool BingeEnd(BingeViewModel model, BingeShow show)
+        {
+            if (!AddEpisodeInfo(model))
+            {
+                if (IsOngoing(show))
+                {
+                    MoveToFollow(show);
+                    Thread remove = new Thread(PermanentlyRemove);
+                    remove.Start(show.Id);
+                }
+                else
+                {
+                    Thread remove = new Thread(PermanentlyRemove);
+                    remove.Start(show.Id);
+                }
 
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsOngoing(BingeShow chosen)
+        {
+            string path = String.Format(Constants.GetSeries, chosen.Id);
+
+            try
+            {
+                ShowInfoRoot data = WebParser<ShowInfoRoot>.GetInfo(path);
+
+                if (data.data.status == "Continuing")
+                    return true;
+            }
+            catch (Exception)
+            {
+                //Unautorized
+                return false;
+            }
+
+            return false;
+        }
+
+        private void MoveToFollow(BingeShow show)
+        {
+            Show newShow = new Show()
+            {
+                Id = show.Id,
+                CurrentEpisode = show.CurrentEpisode,
+                CurrentSeason = show.CurrentSeason,
+                Title = show.Title,
+                Status = Status.Green
+            };
+
+            List<Show> followed = JSONParser<List<Show>>.ReadFile(Constants.FollowedFile);
+
+            followed.Add(newShow);
+
+            JSONParser<List<Show>>.WriteJson(followed, Constants.FollowedFile);
+        }
     }
 }
