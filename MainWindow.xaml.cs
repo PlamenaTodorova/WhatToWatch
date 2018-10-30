@@ -19,6 +19,7 @@ namespace WhatToWatch
 
             followController = new FollowedController();
             bingeController = new BingeController();
+
             currentController = followController;
             tvShows.ItemsSource = followController.GetShows();
         }
@@ -133,7 +134,7 @@ namespace WhatToWatch
             int id = int.Parse(IdString);
 
             // Get episode
-            ShowBindingModel model = followController.GetShow(id);
+            ShowBindingModel model = currentController.GetShow(id);
 
             // Edit info
             EditShow editWindow = new EditShow(model);
