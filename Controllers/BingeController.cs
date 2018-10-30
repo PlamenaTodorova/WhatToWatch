@@ -92,7 +92,7 @@ namespace WhatToWatch.Controllers
             return true;
         }
 
-        private void GenerateViews()
+        public void GenerateViews()
         {
             views = new ObservableCollection<BingeViewModel>();
 
@@ -167,7 +167,7 @@ namespace WhatToWatch.Controllers
 
                 if (BingeEnd(toBeChanged, chosen))
                     return false;
-                
+
                 return true;
             }
 
@@ -202,7 +202,29 @@ namespace WhatToWatch.Controllers
         #region MoveThrough the episodes
         public bool NextEpisode(int id)
         {
-            throw new NotImplementedException();
+            BingeViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BingeShow chosen = tvShows.FirstOrDefault(s => s.Id == id);
+
+            if (chosen != null)
+            {
+                chosen.CurrentEpisode++;
+                toBeChanged.CurrentEpisode++;
+
+                if (!AddEpisodeInfo(toBeChanged))
+                {
+                    chosen.CurrentEpisode = 1;
+                    chosen.CurrentSeason++;
+                    toBeChanged.CurrentEpisode = 1;
+                    toBeChanged.CurrentSeason++;
+
+                    if (BingeEnd(toBeChanged, chosen))
+                        return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         public bool PreviousEpisode(int id)
