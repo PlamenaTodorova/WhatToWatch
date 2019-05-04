@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using WhatToWatch.Models;
@@ -15,7 +13,7 @@ using WhatToWatch.Utilities;
 
 namespace WhatToWatch.Controllers
 {
-    public class FollowedController
+    public class FollowedController : IControllable
     {
         private List<Show> tvShows;
         private ObservableCollection<ShowViewModel> views;
@@ -23,6 +21,7 @@ namespace WhatToWatch.Controllers
         public FollowedController()
         {
             tvShows = JSONParser<List<Show>>.ReadFile(Constants.FollowedFile);
+            GenerateViews();
         }
 
         #region Safe
@@ -35,27 +34,6 @@ namespace WhatToWatch.Controllers
         #region ReturnAll
         public ObservableCollection<ShowViewModel> GetShows()
         {
-            List<ShowViewModel> helper = new List<ShowViewModel>();
-
-            for (int i = 0; i < tvShows.Count; i++)
-            {
-                ShowViewModel newModel = new ShowViewModel(tvShows[i]);
-
-                if (!AddEpisodeInfo(newModel))
-                    if (!IsOngoing(tvShows[i]))
-                    {
-                        PermanentlyRemove(tvShows[i].Id);
-                        i--;
-                        continue;
-                    }
-
-                helper.Add(newModel);
-            }
-
-            helper.Sort();
-
-            views = new ObservableCollection<ShowViewModel>(helper);
-
             return views;
         }
 
@@ -91,6 +69,30 @@ namespace WhatToWatch.Controllers
             model.UpdateEpisodeInfo(ep.data);
 
             return true;
+        }
+
+        public void GenerateViews()
+        {
+            List<ShowViewModel> helper = new List<ShowViewModel>();
+
+            for (int i = 0; i < tvShows.Count; i++)
+            {
+                ShowViewModel newModel = new ShowViewModel(tvShows[i]);
+
+                if (!AddEpisodeInfo(newModel))
+                    if (!IsOngoing(tvShows[i]))
+                    {
+                        PermanentlyRemove(tvShows[i].Id);
+                        i--;
+                        continue;
+                    }
+
+                helper.Add(newModel);
+            }
+
+            helper.Sort();
+
+            views = new ObservableCollection<ShowViewModel>(helper);
         }
         #endregion
 
@@ -133,30 +135,6 @@ namespace WhatToWatch.Controllers
         private void AddAndSave(object show)
         {
             tvShows.Add(((Show)show));
-            SaveShows();
-        }
-        #endregion
-
-        #region RemoveTVShow
-        public void RemoveShow(int id)
-        {
-            ShowViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
-
-            if (toBeRemoved != null)
-            {
-                views.Remove(toBeRemoved);
-
-                Thread remove = new Thread(PermanentlyRemove);
-                remove.Start(id);
-            }
-        }
-
-        private void PermanentlyRemove(object param)
-        {
-            int id = (int)param;
-            Show toBeRemoved = tvShows.FirstOrDefault(s => s.Id == id);
-
-            tvShows.Remove(toBeRemoved);
             SaveShows();
         }
         #endregion
@@ -209,8 +187,32 @@ namespace WhatToWatch.Controllers
         }
         #endregion
 
+        #region RemoveTVShow
+        public void RemoveShow(int id)
+        {
+            ShowViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
+
+            if (toBeRemoved != null)
+            {
+                views.Remove(toBeRemoved);
+
+                Thread remove = new Thread(PermanentlyRemove);
+                remove.Start(id);
+            }
+        }
+
+        private void PermanentlyRemove(object param)
+        {
+            int id = (int)param;
+            Show toBeRemoved = tvShows.FirstOrDefault(s => s.Id == id);
+
+            tvShows.Remove(toBeRemoved);
+            SaveShows();
+        }
+        #endregion
+
         #region NextEpisode
-        public bool NextEposode(int id)
+        public bool NextEpisode(int id)
         {
             ShowViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             Show chosen = tvShows.FirstOrDefault(s => s.Id == id);

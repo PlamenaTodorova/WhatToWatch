@@ -9,14 +9,20 @@ namespace WhatToWatch
 {
     public partial class MainWindow : Window
     {
-        private FollowedController controller;
+        private IControllable currentController;
+        private FollowedController followController;
+        private BingeController bingeController;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
 
-            controller = new FollowedController();
-            tvShows.ItemsSource = controller.GetShows();
+            followController = new FollowedController();
+            bingeController = new BingeController();
+
+            currentController = followController;
+            tvShows.ItemsSource = followController.GetShows();
         }
 
         private void NewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -36,7 +42,7 @@ namespace WhatToWatch
 
                 try
                 {
-                    if (!controller.AddShow(newShow))
+                    if (!currentController.AddShow(newShow))
                         MessageBox.Show("The show was not added. Check your internet conection ot the spelling of the show's title");
                 }
                 catch (HttpRequestException ex)
@@ -61,7 +67,7 @@ namespace WhatToWatch
 
             int id = int.Parse(IdString);
 
-            controller.NextEposode(id);
+            currentController.NextEpisode(id);
         }
 
         private void Previous_Click(object sender, RoutedEventArgs e)
@@ -79,19 +85,36 @@ namespace WhatToWatch
             //Do stuff here
         }
 
+        private void NextSeason_Click(object sender, RoutedEventArgs e)
+        {
+            string IdString =
+                ((TextBlock)
+                ((Grid)
+                ((Grid)
+                ((StackPanel)
+                ((Border)
+                ((Button)sender).Parent).Parent).Parent).Parent).Children[0]).Text;
+
+            int id = int.Parse(IdString);
+
+            //Do stuf here
+        }
+
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            //Do something here?????????????
+            currentController.GenerateViews();
         }
 
         private void Following_Click(object sender, RoutedEventArgs e)
         {
-            //Do something here?????????????
+            tvShows.ItemsSource = followController.GetShows();
+            currentController = followController;
         }
 
         private void Binging_Click(object sender, RoutedEventArgs e)
         {
-            //Do something here?????????????
+            tvShows.ItemsSource = bingeController.GetShows();
+            currentController = bingeController;
         }
 
         private void ToWatch_Click(object sender, RoutedEventArgs e)
@@ -112,7 +135,7 @@ namespace WhatToWatch
             int id = int.Parse(IdString);
 
             // Get episode
-            ShowBindingModel model = controller.GetShow(id);
+            ShowBindingModel model = currentController.GetShow(id);
 
             // Edit info
             EditShow editWindow = new EditShow(model);
@@ -121,7 +144,7 @@ namespace WhatToWatch
 
             if (editWindow.DialogResult == true)
             {
-                if (!controller.EditShow(id, model))
+                if (!currentController.EditShow(id, model))
                     MessageBox.Show("There was a problem. The show was not edited");
             }
         }
@@ -139,7 +162,7 @@ namespace WhatToWatch
             int id = int.Parse(IdString);
 
             //Remove show
-            controller.RemoveShow(id);
+            currentController.RemoveShow(id);
         }
     }
 }

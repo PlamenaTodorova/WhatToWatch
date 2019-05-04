@@ -217,12 +217,14 @@
                                         VerticalAlignment="Bottom">
 
                                         <Border
+                                            Name="previous"
+                                            Visibility="Collapsed"
                                             Style="{StaticResource Buttons}">
 
                                             <Button
-                                                Content="Prewious Episode"
+                                                Content="Previous Episode"
                                                 Height="25"
-                                                Width="150"
+                                                Width="140"
                                                 Click="Previous_Click"
                                                 Background="Transparent"/>
                                         </Border>
@@ -233,8 +235,21 @@
                                             <Button
                                                 Content="Next Episode"
                                                 Height="25"
-                                                Width="250"
+                                                Width="240"
                                                 Click="NextEpisode_Click"
+                                                Background="Transparent"/>
+                                        </Border>
+
+                                        <Border
+                                            Name="nextSeason"
+                                            Visibility="Collapsed"
+                                            Style="{StaticResource Buttons}">
+
+                                            <Button
+                                                Content="&#8594;"
+                                                Height="25"
+                                                Width="25"
+                                                Click="NextSeason_Click"
                                                 Background="Transparent"/>
                                         </Border>
                                     </StackPanel>
@@ -259,6 +274,7 @@
                                             Content="&#10008;"
                                             Click="Remove_Click"/>
                                     </Border>
+
                                 </StackPanel>
                             </Grid>
                         </Border>
