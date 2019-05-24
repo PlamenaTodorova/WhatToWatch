@@ -1,0 +1,99 @@
+﻿<Window x:Class="WhatToWatch.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:utilitie= "clr-namespace:WhatToWatch.Utilities"
+        xmlns:local="clr-namespace:WhatToWatch"
+        mc:Ignorable="d"
+        Title="What To Watch" 
+        Height="600" 
+        Width="640"
+        FontSize="17">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="NewCommand_Executed" CanExecute="NewCommand_CanExecute" />
+    </Window.CommandBindings>
+
+    <Window.Resources>
+        <Style x:Key="Buttons" TargetType="Border">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="Background" Value="LightSteelBlue"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="Silver">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel
+                Grid.Row="0"
+                Orientation="Horizontal"
+                Background="DimGray">
+            <Border
+                        Style="{StaticResource Buttons}">
+
+                <Button
+                        Padding="10"
+                        Content="New Series" 
+                        Background="Transparent"
+                        Command="ApplicationCommands.New"/>
+            </Border>
+
+            <Border
+                        Style="{StaticResource Buttons}">
+
+                <Button
+                            Padding="10"
+                            Content="&#10227;"
+                            Background="Transparent"
+                            Click="Refresh_Click"/>
+            </Border>
+
+            <Border
+                        Style="{StaticResource Buttons}">
+
+                <Button
+                            Padding="10" 
+                            Name="folloring"
+                            Content="Following"
+                            Background="Transparent"
+                            Click="Following_Click"/>
+            </Border>
+
+            <Border
+                Style="{StaticResource Buttons}">
+
+                <Button
+                    Padding="10" 
+                    Name="binging"
+                    Content="Binging"
+                    Background="Transparent"
+                    Click="Binging_Click"/>
+            </Border>
+
+            <Border
+                Style="{StaticResource Buttons}">
+
+                <Button
+                    Padding="10"
+                    Name="toWatch"
+                    Content="To Watch"
+                    Background="Transparent"
+                    Click="ToWatch_Click"/>
+            </Border>
+        </StackPanel>
+
+        <Frame Grid.Row="1"
+            Height="Auto"
+            Name="PageHolder"
+            NavigationUIVisibility="Hidden"
+            Background="Silver">
+        </Frame>
+    </Grid>
+</Window>
