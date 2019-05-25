@@ -8,7 +8,7 @@ using WhatToWatch.Utilities;
 
 namespace WhatToWatch.Models.ViewModels
 {
-    public class BingeViewModel
+    public class BingeViewModel : BaseViewModel
     {
         public BingeViewModel(BingeShow show)
         {
@@ -20,23 +20,11 @@ namespace WhatToWatch.Models.ViewModels
             this.PosterSource = HelperFunctions.GetPosterSorce(show.Id, show.CurrentSeason);
         }
 
-        public int Id { get; set; }
-
-        public string Title { get; set; }
-
-        public int CurrentSeason { get; set; }
-
         public int TotalSeason { get; set; }
-
-        public int CurrentEpisode { get; set;}
 
         public int TotalEpisodes { get; set; }
 
-        public string PosterSource { get; set; }
-
-        public string EpisodeTitle { get; set; }
-
-        public void UpdateEpisodeInfo(List<EpisodeInfoJson> episodeData, SeasonsDataJson totalData)
+        public override void UpdateEpisodeInfo(List<EpisodeInfoJson> episodeData, SeasonsDataJson totalData)
         {
             if (episodeData != null && episodeData.Count >= this.CurrentEpisode)
             {

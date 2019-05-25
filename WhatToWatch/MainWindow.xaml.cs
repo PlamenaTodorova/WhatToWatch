@@ -10,7 +10,7 @@ namespace WhatToWatch
 {
     public partial class MainWindow : Window
     {
-        private IControllable currentController;
+        private BaseController currentController;
         private FollowedController followController;
         private BingeController bingeController;
 

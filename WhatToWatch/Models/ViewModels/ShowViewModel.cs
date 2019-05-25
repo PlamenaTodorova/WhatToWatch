@@ -5,7 +5,7 @@ using System;
 
 namespace WhatToWatch.Models.ViewModels
 {
-    public class ShowViewModel : IComparable<ShowViewModel>
+    public class ShowViewModel : BaseViewModel, IComparable<ShowViewModel>
     {
         public ShowViewModel(Show show)
         {
@@ -17,28 +17,13 @@ namespace WhatToWatch.Models.ViewModels
             this.RealStatus = show.Status.ToString();
 
             this.PosterSource = HelperFunctions.GetPosterSorce(show.Id, show.CurrentSeason);
-
         }
-
-        public int Id { get; set; }
-
-        public string Title { get; set; }
-
-        public int CurrentSeason { get; set; }
-
-        public int CurrentEpisode { get; set; }
-
-        public string PosterSource { get; set; }
 
         public string Status { get; set; }
 
-        public string EpisodeTitle { get; set; }
-
-        public DateTime? ReleaseDate { get; set; }
-
         private string RealStatus { get; set; }
 
-        public void UpdateEpisodeInfo(List<EpisodeInfoJson> data)
+        public override void UpdateEpisodeInfo(List<EpisodeInfoJson> data)
         {
             if (data != null && data.Count != 0)
             {
@@ -54,7 +39,7 @@ namespace WhatToWatch.Models.ViewModels
                 this.Status = "None";
         }
 
-        public void UpdateEpisodeInfo()
+        public override void UpdateEpisodeInfo()
         {
             this.EpisodeTitle = "";
             this.ReleaseDate = null;

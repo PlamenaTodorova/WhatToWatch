@@ -13,10 +13,10 @@ using WhatToWatch.Utilities;
 
 namespace WhatToWatch.Controllers
 {
-    public class FollowedController : IControllable
+    public class FollowedController : BaseController
     {
         private List<Show> tvShows;
-        private ObservableCollection<ShowViewModel> views;
+        private ObservableCollection<BaseViewModel> views;
 
         public FollowedController()
         {
@@ -32,12 +32,12 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region ReturnAll
-        public ObservableCollection<ShowViewModel> GetShows()
+        public override ObservableCollection<BaseViewModel> GetShows()
         {
             return views;
         }
 
-        public ShowBindingModel GetShow(int id)
+        public override ShowBindingModel GetShow(int id)
         {
             Show chosen = tvShows.FirstOrDefault(e => e.Id == id);
 
@@ -52,7 +52,7 @@ namespace WhatToWatch.Controllers
             return model;
         }
 
-        private bool AddEpisodeInfo(ShowViewModel model)
+        private bool AddEpisodeInfo(BaseViewModel model)
         {
             string urlPath = String.Format(Constants.GetEpisode, model.Id, model.CurrentSeason, model.CurrentEpisode);
             EpisodeInfoRoot ep;
@@ -71,7 +71,7 @@ namespace WhatToWatch.Controllers
             return true;
         }
 
-        public void GenerateViews()
+        public override void GenerateViews()
         {
             List<ShowViewModel> helper = new List<ShowViewModel>();
 
@@ -92,12 +92,12 @@ namespace WhatToWatch.Controllers
 
             helper.Sort();
 
-            views = new ObservableCollection<ShowViewModel>(helper);
+            views = new ObservableCollection<BaseViewModel>(helper);
         }
         #endregion
 
         #region AddTVShow
-        public bool AddShow(ShowBindingModel show)
+        public override bool AddShow(ShowBindingModel show)
         {
             string urlPath = String.Format(Constants.GetSearch, GetSlug(show.Name));
 
@@ -122,7 +122,7 @@ namespace WhatToWatch.Controllers
             save.Start(newShow);
             
             //Insert the view into the collection
-            HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, newView);
+            HelperFunctions.PutInTheRightPlace<BaseViewModel>(views, newView);
 
             return true;
         }
@@ -140,9 +140,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region EditTVShow
-        public bool EditShow(int id, ShowBindingModel show)
+        public override bool EditShow(int id, ShowBindingModel show)
         {
-            ShowViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             Show chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
             if (toBeChanged != null)
@@ -158,7 +158,7 @@ namespace WhatToWatch.Controllers
                     if (!IsOngoing(chosen))
                         return false;
                 
-                HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
+                HelperFunctions.PutInTheRightPlace<BaseViewModel>(views, toBeChanged);
 
                 return true;
             }
@@ -188,9 +188,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region RemoveTVShow
-        public void RemoveShow(int id)
+        public override void RemoveShow(int id)
         {
-            ShowViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
 
             if (toBeRemoved != null)
             {
@@ -212,9 +212,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region NextEpisode
-        public bool NextEpisode(int id)
+        public override bool NextEpisode(int id)
         {
-            ShowViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             Show chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
             if (chosen != null)
@@ -244,7 +244,7 @@ namespace WhatToWatch.Controllers
                     }
                 }
 
-                HelperFunctions.PutInTheRightPlace<ShowViewModel>(views, toBeChanged);
+                HelperFunctions.PutInTheRightPlace<BaseViewModel>(views, toBeChanged);
 
                 return true;
             }

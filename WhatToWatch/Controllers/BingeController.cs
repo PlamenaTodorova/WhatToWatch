@@ -16,10 +16,10 @@ using WhatToWatch.Utilities;
 
 namespace WhatToWatch.Controllers
 {
-    public class BingeController : IControllable
+    public class BingeController : BaseController
     {
         private List<BingeShow> tvShows;
-        private ObservableCollection<BingeViewModel> views;
+        private ObservableCollection<BaseViewModel> views;
 
         public BingeController()
         {
@@ -36,7 +36,7 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region Get
-        public ShowBindingModel GetShow(int id)
+        public override ShowBindingModel GetShow(int id)
         {
             BingeShow chosen = tvShows.FirstOrDefault(e => e.Id == id);
 
@@ -50,12 +50,12 @@ namespace WhatToWatch.Controllers
             return model;
         }
 
-        public ObservableCollection<BingeViewModel> GetShows()
+        public override ObservableCollection<BaseViewModel> GetShows()
         {
             return views;
         }
 
-        private bool AddEpisodeInfo(BingeViewModel model)
+        private bool AddEpisodeInfo(BaseViewModel model)
         {
             string epPath = String.Format(Constants.GetAllEpisodes, model.Id, model.CurrentSeason);
             EpisodeInfoRoot ep;
@@ -92,9 +92,9 @@ namespace WhatToWatch.Controllers
             return true;
         }
 
-        public void GenerateViews()
+        public override void GenerateViews()
         {
-            views = new ObservableCollection<BingeViewModel>();
+            views = new ObservableCollection<BaseViewModel>();
 
             for (int i = 0; i < tvShows.Count; i++)
             {
@@ -108,7 +108,7 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region Add
-        public bool AddShow(ShowBindingModel show)
+        public override bool AddShow(ShowBindingModel show)
         {
             string urlPath = String.Format(Constants.GetSearch, GetSlug(show.Name));
 
@@ -150,9 +150,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region Edit
-        public bool EditShow(int id, ShowBindingModel show)
+        public override bool EditShow(int id, ShowBindingModel show)
         {
-            BingeViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             BingeShow chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
             if (toBeChanged != null)
@@ -176,9 +176,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region Remove
-        public void RemoveShow(int id)
+        public override void RemoveShow(int id)
         {
-            BingeViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeRemoved = views.FirstOrDefault(v => v.Id == id);
 
             if (toBeRemoved != null)
             {
@@ -200,9 +200,9 @@ namespace WhatToWatch.Controllers
         #endregion
 
         #region MoveThrough the episodes
-        public bool NextEpisode(int id)
+        public override bool NextEpisode(int id)
         {
-            BingeViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             BingeShow chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
             if (chosen != null)
@@ -227,14 +227,14 @@ namespace WhatToWatch.Controllers
             return false;
         }
 
-        public bool PreviousEpisode(int id)
+        public override bool PreviousEpisode(int id)
         {
             throw new NotImplementedException();
         }
 
-        public bool NextSeason(int id)
+        public override bool NextSeason(int id)
         {
-            BingeViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
+            BaseViewModel toBeChanged = views.FirstOrDefault(v => v.Id == id);
             BingeShow chosen = tvShows.FirstOrDefault(s => s.Id == id);
 
             if (chosen != null)
@@ -254,7 +254,7 @@ namespace WhatToWatch.Controllers
         }
         #endregion
         
-        private bool BingeEnd(BingeViewModel model, BingeShow show)
+        private bool BingeEnd(BaseViewModel model, BingeShow show)
         {
             if (!AddEpisodeInfo(model))
             {
@@ -312,11 +312,6 @@ namespace WhatToWatch.Controllers
             followed.Add(newShow);
 
             JSONParser<List<Show>>.WriteJson(followed, Constants.FollowedFile);
-        }
-
-        ObservableCollection<ShowViewModel> IControllable.GetShows()
-        {
-            throw new NotImplementedException();
         }
     }
 }

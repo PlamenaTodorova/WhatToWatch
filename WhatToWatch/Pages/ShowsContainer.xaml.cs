@@ -22,9 +22,9 @@ namespace WhatToWatch.Pages
     /// </summary>
     public partial class ShowsContainer : Page
     {
-        IControllable controller;
+        BaseController controller;
 
-        public ShowsContainer(IControllable controller)
+        public ShowsContainer(BaseController controller)
         {
             InitializeComponent();
             this.controller = controller;
