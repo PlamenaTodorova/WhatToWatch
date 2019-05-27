@@ -58,16 +58,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddShow.xaml.cs">
-      <DependentUpon>AddShow.xaml</DependentUpon>
+    <Compile Include="ChangeShow.xaml.cs">
+      <DependentUpon>ChangeShow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BingeController.cs" />
     <Compile Include="Controllers\FollowedController.cs" />
     <Compile Include="Controllers\IControllable.cs" />
-    <Compile Include="EditShow.xaml.cs">
-      <DependentUpon>EditShow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Models\BindingModels\ShowBindingModel.cs" />
     <Compile Include="Models\BingeShow.cs" />
     <Compile Include="Models\JsonModels\EpisodeInfoJson.cs" />
@@ -87,11 +84,7 @@
     <Compile Include="Utilities\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Utilities\HelperFunctions.cs" />
     <Compile Include="Utilities\StyleConverter.cs" />
-    <Page Include="AddShow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EditShow.xaml">
+    <Page Include="ChangeShow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

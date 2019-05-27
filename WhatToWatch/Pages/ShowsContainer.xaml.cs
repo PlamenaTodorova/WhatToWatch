@@ -92,7 +92,7 @@ namespace WhatToWatch.Pages
             ShowBindingModel model = controller.GetShow(id);
 
             // Edit info
-            EditShow editWindow = new EditShow(model);
+            ChangeShow editWindow = new ChangeShow(model);
 
             editWindow.ShowDialog();
 

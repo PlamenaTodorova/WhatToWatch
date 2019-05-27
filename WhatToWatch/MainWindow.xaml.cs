@@ -33,7 +33,7 @@ namespace WhatToWatch
 
         private void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AddShow addWindow = new AddShow();
+            ChangeShow addWindow = new ChangeShow();
 
             addWindow.ShowDialog();
 

@@ -19,7 +19,7 @@ namespace WhatToWatch.Parsers
             request.PreAuthenticate = true;
 
             //FixThis!!!!!!!!!!!!!!!
-            request.Headers.Add("Authorization", "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTcwNzI4NTAsImlkIjoiIiwib3JpZ19pYXQiOjE1NTY5ODY0NTAsInVzZXJpZCI6NTExMzE0LCJ1c2VybmFtZSI6InBsYW1lbmEuaS50b2Rvcm92YWwyOCJ9.Uu3LPe-P0oxuR4cJzqC8WqBt0T6Ft6j3DVVb6LXdpMMtlPjpnW1lvDGSOYdzcrzzUmD9NRwRSxlCh6LdM0u3PBJqPDWSXuxNnUPjU6kY5_I88w9YRyzVqEfK9J-j2vHzYAQP_4EYWTkB6vPtaf69MXL9vTkiJiekraMrI4DfmAeB1yvdr9V5bHnmjUnNLu3JaFEMlk9cU9b50Xi-9u0SdfLTpv05FCJZVY7UZ06Vi7odqCtda5jRFNue-DEr9DjLJZu6PW5l4kNRuLxN4npAMpnW012URFtuR3TLk4oTRI_h_FobdgG7Evjq55zii4HOd0BAPsBWYiSBnP6ThVQgxg");
+            request.Headers.Add("Authorization", "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTc1ODk5ODgsImlkIjoiIiwib3JpZ19pYXQiOjE1NTc1MDM1ODgsInVzZXJpZCI6NTExMzE0LCJ1c2VybmFtZSI6InBsYW1lbmEuaS50b2Rvcm92YWwyOCJ9.bY-nLbGp8NzerGH0zwOwCldh9I7dkTU7Jt3mUmSdmes8vrD6vyTGOYksIH60NPp7oLIqP9pWj1y-HuAiokp27NH6nVH9HuOMPfOgJH7scxaLWlpAK-p6GLm5x-bisqBEsOFRULrAyi4MR3M7jQ7xQ-as8qolIQqNAcep5OZ4ykA3Y7QlcABQk_M3ftTrQ326xiyTbN-HQ-_DSyuMeKCralEFtHKhA_acUIKhkslEzcl5xY1-dXEg239Qg0u2wo8EeJbbO_L1Bmp2ybTiThPBRxizNjuINajtLp4dFWOWvYPIn7mU5GIV8IcNXerT_tqFWQfJ8a1qtFq04i9wO5C6Ww");
             request.Accept = "application /json";
 
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();

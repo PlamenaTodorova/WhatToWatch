@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="What To Watch" 
         Height="600" 
-        Width="640"
+        Width="540"
         FontSize="17">
 
     <Window.CommandBindings>
@@ -18,9 +18,9 @@
     <Window.Resources>
         <Style x:Key="Buttons" TargetType="Border">
             <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="3"/>
-            <Setter Property="Background" Value="LightSteelBlue"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
@@ -30,63 +30,60 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel
                 Grid.Row="0"
                 Orientation="Horizontal"
                 Background="DimGray">
-            <Border
-                        Style="{StaticResource Buttons}">
-
-                <Button
+            <Button
                         Padding="10"
-                        Content="New Series" 
                         Background="Transparent"
-                        Command="ApplicationCommands.New"/>
-            </Border>
+                        BorderThickness="0"
+                        Command="ApplicationCommands.New">
+                <TextBlock Foreground="White"
+                               FontSize="20"
+                               Text="New Series"/>
+            </Button>
 
-            <Border
-                        Style="{StaticResource Buttons}">
-
-                <Button
+            <Button
                             Padding="10"
-                            Content="&#10227;"
+                            BorderThickness="0"
                             Background="Transparent"
-                            Click="Refresh_Click"/>
-            </Border>
-
-            <Border
-                        Style="{StaticResource Buttons}">
-
-                <Button
+                            Click="Refresh_Click">
+                <TextBlock Foreground="White"
+                               FontSize="20"
+                               Text="&#10227;"/>
+            </Button>
+            <Button
                             Padding="10" 
+                            BorderThickness="0"
                             Name="folloring"
-                            Content="Following"
                             Background="Transparent"
-                            Click="Following_Click"/>
-            </Border>
-
-            <Border
-                Style="{StaticResource Buttons}">
-
-                <Button
+                            Click="Following_Click">
+                <TextBlock Foreground="White"
+                               FontSize="20"
+                               Text="Following"/>
+            </Button>
+            <Button
                     Padding="10" 
+                    BorderThickness="0"
                     Name="binging"
-                    Content="Binging"
                     Background="Transparent"
-                    Click="Binging_Click"/>
-            </Border>
-
-            <Border
-                Style="{StaticResource Buttons}">
-
-                <Button
+                    Click="Binging_Click">
+                <TextBlock Foreground="White"
+                               FontSize="20"
+                               Text="Binging"/>
+            </Button>
+            <Button
                     Padding="10"
                     Name="toWatch"
-                    Content="To Watch"
+                    BorderThickness="0"
                     Background="Transparent"
-                    Click="ToWatch_Click"/>
-            </Border>
+                    Click="ToWatch_Click">
+                <TextBlock Foreground="White"
+                               FontSize="20"
+                               Text="To Watch"/>
+            </Button>
         </StackPanel>
 
         <Frame Grid.Row="1"

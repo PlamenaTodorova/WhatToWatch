@@ -19,6 +19,13 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
 
+        <Style x:Key="Header" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+
+        <Style x:Key="Normal" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="17"/>
+        </Style>
 
         <Style x:Key="Red" TargetType="Border">
             <Setter Property="Background" Value="#FF6666"/>
@@ -39,18 +46,15 @@
         <utilitie:StyleConverter x:Key="styleConverter"/>
     </Page.Resources>
     
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel>
             <ItemsControl Name="tvShows">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-
+                        <StackPanel>
                         <Border
                             Margin="5"
-                            Padding="5"
-                            BorderBrush="DarkGray"
-                            BorderThickness="1"
-                            CornerRadius="10">
+                            Padding="5">
                             
                             <Border.Style>
                                 <MultiBinding Converter="{StaticResource styleConverter}">
@@ -95,12 +99,16 @@
                                             Orientation="Horizontal">
 
                                             <TextBlock
+                                                Style="{StaticResource Header}"
                                                 Text="{Binding Title}"/>
                                             <TextBlock
+                                                Style="{StaticResource Header}"
                                                 Text=" (Season "/>
                                             <TextBlock
+                                                Style="{StaticResource Header}"
                                                 Text="{Binding CurrentSeason}"/>
                                             <TextBlock
+                                                Style="{StaticResource Header}"
                                                 Text=")"/>
 
                                         </StackPanel>
@@ -111,6 +119,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock
+                                                Style="{StaticResource Normal}"
                                                 Grid.Column="0"
                                                 Text="Episode: "/>
 
@@ -119,6 +128,7 @@
                                                 Orientation="Horizontal">
 
                                                 <TextBlock Margin="5 0"
+                                                    Style="{StaticResource Normal}"
                                                     TextWrapping="Wrap">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}{0} ( {1} )">
@@ -134,9 +144,11 @@
                                             Orientation="Horizontal">
 
                                             <TextBlock
+                                                Style="{StaticResource Normal}"
                                                 Text="Release date: "/>
 
                                             <TextBlock
+                                                Style="{StaticResource Normal}"
                                                 Text="{Binding ReleaseDate, StringFormat=d, ConverterCulture=en-GB}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -209,6 +221,7 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
